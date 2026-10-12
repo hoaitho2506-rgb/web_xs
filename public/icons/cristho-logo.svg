@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 42" width="170" height="42" fill="none">
+  <defs>
+    <!-- Gradient nền biểu tượng -->
+    <linearGradient id="ctBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+
+    <!-- Gradient viền biểu tượng -->
+    <linearGradient id="ctStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.2"/>
+    </linearGradient>
+
+    <!-- Gradient chữ Tho -->
+    <linearGradient id="ctTextGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+
+    <!-- Đổ bóng nhẹ -->
+    <filter id="ctDropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1e3a8a" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Biểu tượng Monogram CT -->
+  <g filter="url(#ctDropShadow)">
+    <!-- Nền squircle -->
+    <rect x="2" y="3" width="36" height="36" rx="10" fill="url(#ctBgGrad)"/>
+    <rect x="2.5" y="3.5" width="35" height="35" rx="9.5" stroke="url(#ctStrokeGrad)" stroke-width="1"/>
+
+    <!-- Họa tiết Monogram C & T lồng nhau hiện đại -->
+    <!-- Chữ C dạng vòng cung hiện đại -->
+    <path d="M22 14.5C20.5 13.5 18.5 13 16.5 13C12.5 13 9.5 16.2 9.5 21C9.5 25.8 12.5 29 16.5 29C18.8 29 20.8 28.2 22 27" 
+          stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+    <!-- Chữ T cách điệu hiện đại phía trong/bên cạnh C -->
+    <path d="M21 16H31" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+    <path d="M26 16V28" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Điểm nhấn ánh sao nhỏ ở góc trên -->
+    <circle cx="30" cy="10" r="1.5" fill="#93c5fd"/>
+  </g>
+
+  <!-- Typography: Chữ CrisTho -->
+  <g transform="translate(48, 0)">
+    <!-- Cris: Màu xanh đen sang trọng của web -->
+    <text x="0" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" 
+          font-size="20" font-weight="800" fill="#0f172a" letter-spacing="-0.5">Cris</text>
+
+    <!-- Tho: Màu xanh nhận diện web nổi bật -->
+    <text x="40" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" 
+          font-size="20" font-weight="800" fill="url(#ctTextGrad)" letter-spacing="-0.5">Tho</text>
+
+    <!-- Subtitle Developer nhỏ thanh lịch phía dưới -->
+    <text x="1" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-size="8.5" font-weight="700" fill="#64748b" letter-spacing="2.2">DEVELOPER</text>
+
+    <!-- Điểm chấm năng động -->
+    <circle cx="81" cy="20" r="2.5" fill="#38bdf8"/>
+  </g>
+</svg>

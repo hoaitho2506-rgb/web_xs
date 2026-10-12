@@ -2,7 +2,7 @@
 
 Trang web xem kết quả xổ số 3 miền (Miền Nam, Miền Trung, Miền Bắc) thiết kế tối giản, sạch sẽ, hoàn toàn không chứa quảng cáo, phục vụ nhu cầu xem kết quả xổ số an toàn cho gia đình.
 
-- **Tác giả:** cristho
+- **Tác giả:** CrisTho
 - **Email liên hệ:** hoaitho2506@gmail.com
 
 ---
