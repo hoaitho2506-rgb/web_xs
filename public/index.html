@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kết Quả Xổ Số</title>
+  
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="stylesheet" href="/css/style.css?v=5.0">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <div>
+          <h1 class="site-title">Kết Quả Xổ Số</h1>
+          <div class="site-badge">Không quảng cáo • Dành cho gia đình</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- KHUNG DÒ VÉ NHANH -->
+    <section class="checker-section">
+      <h2 class="section-heading">Dò vé số tự động</h2>
+      <form id="ticketCheckerForm" class="checker-form" onsubmit="event.preventDefault(); handleCheckTicket();">
+        <div class="form-row">
+          <div>
+            <label class="input-label" for="checkRegionSelect">Vùng miền</label>
+            <select id="checkRegionSelect" class="form-select" onchange="onCheckerRegionChange()">
+              <option value="mn">Miền Nam</option>
+              <option value="mt">Miền Trung</option>
+              <option value="mb">Miền Bắc</option>
+            </select>
+          </div>
+          <div>
+            <label class="input-label" for="checkDateSelect">Ngày mở thưởng</label>
+            <select id="checkDateSelect" class="form-select" onchange="onCheckerDateChange()">
+              <!-- JS điền -->
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="input-label" for="checkProvinceSelect">Đài / Tỉnh thành</label>
+          <select id="checkProvinceSelect" class="form-select">
+            <!-- JS điền -->
+          </select>
+        </div>
+
+        <div>
+          <label class="input-label" for="ticketNumberInput">Dãy số vé số</label>
+          <div class="ticket-input-wrap">
+            <input 
+              type="tel" 
+              inputmode="numeric" 
+              pattern="[0-9]*" 
+              id="ticketNumberInput" 
+              class="form-input ticket-number-input" 
+              placeholder="Ví dụ: 667748" 
+              maxlength="6"
+              autocomplete="off"
+            >
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">Kiểm tra kết quả</button>
+
+        <div id="checkResultDisplay" class="check-result-display">
+          <!-- Hiển thị kết quả kiểm tra vé -->
+        </div>
+      </form>
+    </section>
+
+    <!-- THANH ĐIỀU HƯỚNG 3 MIỀN -->
+    <nav class="region-nav">
+      <button class="region-tab-btn active" data-region="mn" onclick="changeRegion('mn')">Miền Nam</button>
+      <button class="region-tab-btn" data-region="mt" onclick="changeRegion('mt')">Miền Trung</button>
+      <button class="region-tab-btn" data-region="mb" onclick="changeRegion('mb')">Miền Bắc</button>
+    </nav>
+
+    <!-- BỘ CHỌN NGÀY -->
+    <div class="filters-wrap">
+      <select id="filterDateSelect" class="form-select" onchange="onFilterDateChange()" style="font-weight:600;">
+        <!-- JS điền ngày -->
+      </select>
+    </div>
+
+    <!-- KHU VỰC HIỂN THỊ DUY NHẤT 1 BẢNG TỔNG HỢP CÁC ĐÀI TRONG NGÀY -->
+    <section id="resultsSection">
+      <!-- Toàn bộ các đài hiển thị chung 1 bảng duy nhất -->
+    </section>
+
+    <!-- LỊCH MỞ THƯỞNG -->
+    <section class="schedule-info">
+      <strong>Thời gian mở thưởng hàng ngày:</strong><br>
+      • Miền Nam: 16:15 hàng ngày<br>
+      • Miền Trung: 17:15 hàng ngày<br>
+      • Miền Bắc: 18:15 hàng ngày
+    </section>
+
+  </main>
+
+  <!-- FOOTER LIÊN HỆ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="contact-info">
+          <span>Người phát triển: <strong>cristho</strong></span>
+          <span>•</span>
+          <span>Liên hệ: <a href="mailto:hoaitho2506@gmail.com" class="contact-link">hoaitho2506@gmail.com</a></span>
+        </div>
+        <div class="footer-note">
+          Trang web phi lợi nhuận phục vụ nhu cầu xem kết quả xổ số gia đình, hoàn toàn không chứa quảng cáo hay mã theo dõi.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js?v=5.0"></script>
+</body>
+</html>

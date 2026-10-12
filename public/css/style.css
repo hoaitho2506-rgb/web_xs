@@ -1,0 +1,450 @@
+/* Thiết kế tối giản, sạch sẽ, chuẩn mực Human-Crafted Web */
+:root {
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --border-focus: #94a3b8;
+  
+  --primary: #0f172a;
+  --primary-accent: #2563eb;
+  --danger-color: #dc2626;
+  --success-color: #16a34a;
+
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* HEADER */
+.site-header {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 16px 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+}
+
+.site-badge {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* KHUNG DÒ VÉ NHANH */
+.checker-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.section-heading {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 14px;
+}
+
+.checker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.input-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.form-select, .form-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--text-main);
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-select:focus, .form-input:focus {
+  border-color: var(--primary-accent);
+}
+
+.ticket-input-wrap {
+  position: relative;
+}
+
+.form-input.ticket-number-input {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-align: center;
+  padding: 12px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background: #1e293b;
+}
+
+.btn-primary:active {
+  background: #000000;
+}
+
+/* KẾT QUẢ DÒ VÉ */
+.check-result-display {
+  display: none;
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.check-result-display.winner {
+  display: block;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.check-result-display.no-win {
+  display: block;
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #334155;
+  text-align: center;
+}
+
+.res-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.res-detail {
+  font-size: 15px;
+  margin-top: 6px;
+}
+
+/* TAB CHUYỂN MIỀN */
+.region-nav {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 16px;
+}
+
+.region-tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.region-tab-btn.active {
+  background: #ffffff;
+  color: var(--text-main);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* THANH CHỌN NGÀY VÀ ĐÀI */
+.filters-wrap {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.filters-wrap .form-select {
+  padding: 10px 12px;
+  font-size: 15px;
+}
+
+/* GỢI Ý VUỐT NGANG TRÊN ĐIỆN THOẠI */
+.mobile-scroll-hint {
+  display: none;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: right;
+  margin-bottom: 6px;
+}
+
+@media (max-width: 640px) {
+  .mobile-scroll-hint {
+    display: block;
+  }
+}
+
+/* =======================================================
+   BẢNG MA TRẬN NHIỀU ĐÀI SONG SONG TRÊN CÙNG 1 BẢNG
+   (CÁC ĐÀI NẰM TRÊN 1 HÀNG - CÁC GIẢI NẰM TRÊN 1 HÀNG)
+   ======================================================= */
+.table-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: #ffffff;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.lottery-matrix-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: center;
+}
+
+.lottery-matrix-table th, 
+.lottery-matrix-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.lottery-matrix-table th:last-child, 
+.lottery-matrix-table td:last-child {
+  border-right: none;
+}
+
+.lottery-matrix-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* CỘT TÊN GIẢI GHIM CỐ ĐỊNH BÊN TRÁI KHI CUỘN TRÊN ĐIỆN THOẠI */
+.lottery-matrix-table .col-prize-sticky {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: #f8fafc;
+  width: 105px;
+  min-width: 100px;
+  max-width: 115px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  border-right: 2px solid var(--border-color) !important;
+  text-align: left;
+  padding-left: 14px;
+}
+
+/* TIÊU ĐỀ ĐÀI Ở HÀNG ĐẦU */
+.lottery-matrix-table th.col-station-header {
+  background: #f1f5f9;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-main);
+  padding: 14px 12px;
+  min-width: 140px;
+}
+
+.lottery-matrix-table th.col-prize-corner {
+  background: #e2e8f0;
+  color: var(--text-main);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* CÁC CON SỐ TRONG Ô */
+.cell-numbers-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.matrix-num {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  display: block;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+/* HÀNG ĐẶC BIỆT NỔI BẬT */
+tr.matrix-row-special {
+  background-color: #fff1f2;
+}
+
+tr.matrix-row-special .col-prize-sticky {
+  background-color: #ffe4e6;
+  color: var(--danger-color);
+  font-weight: 800;
+}
+
+tr.matrix-row-special .matrix-num {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--danger-color);
+  letter-spacing: 2px;
+}
+
+/* HÀNG GIẢI NHẤT */
+tr.matrix-row-first .matrix-num {
+  font-size: 21px;
+  color: #1d4ed8;
+}
+
+/* HÀNG GIẢI TÁM */
+tr.matrix-row-eighth .matrix-num {
+  font-size: 23px;
+  color: #b45309;
+}
+
+/* Sọc xen kẽ nhẹ */
+.lottery-matrix-table tr:nth-child(even):not(.matrix-row-special) {
+  background-color: #fcfcfd;
+}
+
+/* LỊCH QUAY THƯỞNG */
+.schedule-info {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 24px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.schedule-info strong {
+  color: var(--text-main);
+}
+
+/* FOOTER THÔNG TIN & LIÊN HỆ */
+.site-footer {
+  border-top: 1px solid var(--border-color);
+  background: #ffffff;
+  padding: 24px 0 40px 0;
+  margin-top: 40px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.contact-link {
+  color: var(--primary-accent);
+  text-decoration: none;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+}
+
+.footer-note {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* RESPONSIVE MOBILE */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 10px;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .lottery-matrix-table th.col-station-header {
+    font-size: 15px;
+    min-width: 125px;
+    padding: 10px 8px;
+  }
+  .lottery-matrix-table .col-prize-sticky {
+    width: 90px;
+    min-width: 85px;
+    font-size: 14px;
+    padding-left: 10px;
+  }
+  .matrix-num {
+    font-size: 18px;
+  }
+  tr.matrix-row-special .matrix-num {
+    font-size: 22px;
+  }
+}
