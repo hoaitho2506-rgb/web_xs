@@ -265,15 +265,25 @@ function renderResults() {
   const regionNameText = activeRegion === 'mb' ? 'Miền Bắc' : (activeRegion === 'mt' ? 'Miền Trung' : 'Miền Nam');
   const stationsNamesStr = provinces.map(p => p.province).join(' • ');
 
-  // PHẦN 2: THANH BANNER NGÀY NỔI BẬT TRÊN ĐẦU BẢNG KẾT QUẢ
+  // PHẦN 2: THANH BANNER NGÀY NỔI BẬT TRÊN ĐẦU BẢNG KẾT QUẢ KÈM NÚT CHIA SẺ
   const dateBannerHtml = `
     <div class="results-date-banner">
-      <div class="banner-date-main">
-        KẾT QUẢ XỔ SỐ ${regionNameText.toUpperCase()} — ${dayData.date} ${dayData.dayOfWeek ? `(${dayData.dayOfWeek.toUpperCase()})` : ''}
+      <div class="banner-content-wrap">
+        <div class="banner-date-main">
+          KẾT QUẢ XỔ SỐ ${regionNameText.toUpperCase()} — ${dayData.date} ${dayData.dayOfWeek ? `(${dayData.dayOfWeek.toUpperCase()})` : ''}
+        </div>
+        <div class="banner-date-sub">
+          Mở thưởng ${provinces.length} đài: <strong>${stationsNamesStr}</strong>
+        </div>
       </div>
-      <div class="banner-date-sub">
-        Mở thưởng ${provinces.length} đài: <strong>${stationsNamesStr}</strong>
-      </div>
+      <button type="button" class="btn-share-banner" onclick="openShareModal()" title="Tạo ảnh đẹp chia sẻ nhóm Zalo gia đình">
+        <svg class="share-btn-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+        <span>Chia sẻ Zalo / Tải ảnh</span>
+      </button>
     </div>
   `;
 
