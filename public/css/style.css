@@ -63,20 +63,203 @@ body {
   font-weight: 500;
 }
 
-/* KHUNG DÒ VÉ NHANH */
+/* KHUNG DÒ VÉ TỰ ĐỘNG - THIẾT KẾ RÕ RÀNG, SANG TRỌNG, DỄ NHÌN */
 .checker-section {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px 0;
+  background: #ffffff;
+  border: 2px solid #2563eb;
+  border-radius: 16px;
+  padding: 22px;
+  margin: 28px 0;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08);
 }
 
-.section-heading {
-  font-size: 17px;
+.checker-header {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 14px;
+}
+
+.checker-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.checker-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: #1e3a8a;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.checker-badge {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 14px;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.checker-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 6px;
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+.checker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.checker-step {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.step-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.step-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.digits-badge {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.digits-badge.badge-mn {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.digits-badge.badge-mb {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* THANH CHỌN MIỀN TRONG KHUNG DÒ VÉ */
+.checker-region-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.checker-region-btn {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  border-radius: 10px;
+  padding: 11px 4px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.checker-region-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.checker-region-btn.active {
+  background: #1e3a8a;
+  border-color: #1e3a8a;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2);
+}
+
+/* LƯỚI CHỌN NGÀY VÀ ĐÀI */
+.checker-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checker-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-sublabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.checker-select {
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+  background-color: #ffffff;
+  transition: border-color 0.15s;
+}
+
+.checker-select:focus {
+  border-color: #2563eb;
+}
+
+.btn-check-action {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.btn-check-action:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+
+.btn-check-action:active {
+  transform: translateY(1px);
 }
 
 /* PHẦN 1: KHỐI CHỌN NGÀY NỔI BẬT */
@@ -672,8 +855,15 @@ tr.matrix-row-eighth .matrix-num {
   .container {
     padding: 0 10px;
   }
-  .form-row {
+  .form-row, .checker-grid-2 {
     grid-template-columns: 1fr;
+  }
+  .checker-section {
+    padding: 16px 14px;
+    margin: 20px 0;
+  }
+  .checker-title {
+    font-size: 18px;
   }
   .lottery-matrix-table th.col-station-header {
     font-size: 15px;

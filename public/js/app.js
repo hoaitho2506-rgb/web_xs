@@ -19,7 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // Chuyển tab vùng miền (Nam - Trung - Bắc)
 function changeRegion(region) {
   activeRegion = region;
+  
+  // Đồng bộ cả 2 thanh chọn miền (trên đầu trang & trong khung dò vé)
   document.querySelectorAll('.region-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.region === region);
+  });
+  document.querySelectorAll('.checker-region-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.region === region);
   });
   
@@ -34,7 +39,8 @@ function changeRegion(region) {
 // Cập nhật gợi ý và giới hạn độ dài số vé theo miền
 function updateTicketInputHint() {
   const input = document.getElementById('ticketNumberInput');
-  const label = document.getElementById('ticketInputLabel');
+  const label = document.getElementById('ticketStepLabel');
+  const badge = document.getElementById('ticketDigitsBadge');
   if (!input) return;
 
   const isMB = activeRegion === 'mb';
@@ -43,8 +49,14 @@ function updateTicketInputHint() {
 
   input.maxLength = requiredDigits;
   input.placeholder = isMB ? 'Nhập đủ 5 số (ví dụ: 07363)' : 'Nhập đủ 6 số (ví dụ: 667748)';
+  
   if (label) {
-    label.innerHTML = `3. Nhập đủ <strong>${requiredDigits} chữ số</strong> in trên vé số ${regionName}:`;
+    label.textContent = `Nhập đủ ${requiredDigits} số in trên tờ vé (${regionName}):`;
+  }
+
+  if (badge) {
+    badge.textContent = `Vé ${requiredDigits} số`;
+    badge.className = isMB ? 'digits-badge badge-mb' : 'digits-badge badge-mn';
   }
 
   // Nếu số đang có dài hơn độ dài miền mới thì cắt bớt

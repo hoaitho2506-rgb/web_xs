@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#ffffff">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=10.0">
+  <link rel="stylesheet" href="/css/style.css?v=12.0">
 </head>
 <body>
 
@@ -51,25 +51,58 @@
 
     <!-- 2. KHU VỰC DÒ VÉ TỰ ĐỘNG (NẰM DƯỚI ĐỂ ĐỐI CHIẾU LẠI BẰNG MÁY) -->
     <section class="checker-section">
-      <h2 class="section-heading">Dò vé số tự động (Chống nhầm đài, nhầm ngày)</h2>
+      <div class="checker-header">
+        <div class="checker-title-wrap">
+          <h2 class="checker-title">Dò vé số tự động</h2>
+          <span class="checker-badge">Chính xác 100%</span>
+        </div>
+        <p class="checker-subtitle">Tự động so khớp tất cả các giải theo đúng miền, đài và ngày mở thưởng.</p>
+      </div>
+
       <form id="ticketCheckerForm" class="checker-form" onsubmit="event.preventDefault(); handleCheckTicket();">
-        <div class="form-row">
-          <div>
-            <label class="input-label" for="checkDateSelect">1. Ngày mở thưởng:</label>
-            <select id="checkDateSelect" class="form-select" onchange="onCheckerDateChange()">
-              <!-- Danh sách ngày -->
-            </select>
+        
+        <!-- BƯỚC 1: CHỌN MIỀN NGAY TẠI KHUNG DÒ (KHÔNG CẦN CUỘN LÊN ĐẦU TRANG) -->
+        <div class="checker-step">
+          <div class="step-label">
+            <span class="step-num">1</span>
+            <span class="step-name">Chọn Miền xổ số:</span>
           </div>
-          <div>
-            <label class="input-label" for="checkProvinceSelect">2. Đài / Tỉnh thành in trên vé:</label>
-            <select id="checkProvinceSelect" class="form-select">
-              <!-- Danh sách đài mở thưởng của ngày đó -->
-            </select>
+          <div class="checker-region-nav">
+            <button type="button" class="checker-region-btn active" data-region="mn" onclick="changeRegion('mn')">Miền Nam</button>
+            <button type="button" class="checker-region-btn" data-region="mt" onclick="changeRegion('mt')">Miền Trung</button>
+            <button type="button" class="checker-region-btn" data-region="mb" onclick="changeRegion('mb')">Miền Bắc</button>
           </div>
         </div>
 
-        <div>
-          <label class="input-label" id="ticketInputLabel" for="ticketNumberInput">3. Nhập đủ 6 chữ số in trên tờ vé số:</label>
+        <!-- BƯỚC 2: CHỌN NGÀY VÀ ĐÀI -->
+        <div class="checker-step">
+          <div class="step-label">
+            <span class="step-num">2</span>
+            <span class="step-name">Chọn Ngày & Đài in trên tờ vé:</span>
+          </div>
+          <div class="checker-grid-2">
+            <div class="checker-field">
+              <label class="field-sublabel" for="checkDateSelect">Ngày mở thưởng:</label>
+              <select id="checkDateSelect" class="form-select checker-select" onchange="onCheckerDateChange()">
+                <!-- Danh sách ngày -->
+              </select>
+            </div>
+            <div class="checker-field">
+              <label class="field-sublabel" for="checkProvinceSelect">Đài / Tỉnh thành:</label>
+              <select id="checkProvinceSelect" class="form-select checker-select">
+                <!-- Danh sách đài mở thưởng của ngày đó -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- BƯỚC 3: NHẬP SỐ VÉ -->
+        <div class="checker-step">
+          <div class="step-label">
+            <span class="step-num">3</span>
+            <span class="step-name" id="ticketStepLabel">Nhập đủ 6 số in trên tờ vé (Miền Nam):</span>
+            <span id="ticketDigitsBadge" class="digits-badge badge-mn">Vé 6 số</span>
+          </div>
           <div class="ticket-input-wrap">
             <input 
               type="tel" 
@@ -77,14 +110,14 @@
               pattern="[0-9]*" 
               id="ticketNumberInput" 
               class="form-input ticket-number-input" 
-              placeholder="Nhập 5 hoặc 6 chữ số" 
+              placeholder="Nhập đủ 6 số (ví dụ: 667748)" 
               maxlength="6"
               autocomplete="off"
             >
           </div>
         </div>
 
-        <button type="submit" class="btn-primary">Kiểm tra kết quả ngay</button>
+        <button type="submit" class="btn-check-action">Kiểm tra kết quả ngay</button>
 
         <div id="checkResultDisplay" class="check-result-display">
           <!-- Hiển thị kết quả kiểm tra vé -->
@@ -118,7 +151,7 @@
     </div>
   </footer>
 
-  <script src="/js/celebration.js?v=11.0"></script>
-  <script src="/js/app.js?v=11.0"></script>
+  <script src="/js/celebration.js?v=12.0"></script>
+  <script src="/js/app.js?v=12.0"></script>
 </body>
 </html>
