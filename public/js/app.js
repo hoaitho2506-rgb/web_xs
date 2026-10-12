@@ -60,31 +60,93 @@ async function loadRegionData(region) {
   }
 }
 
-// Điền các ngày vào bộ chọn ngày duy nhất
+// Điền danh sách ngày vào cả 2 bộ chọn (bảng xem & khung dò vé)
 function renderDateSelector(days) {
-  const select = document.getElementById('unifiedDateSelect');
-  if (!select) return;
-  select.innerHTML = '';
+  const unifiedSelect = document.getElementById('unifiedDateSelect');
+  const checkDateSelect = document.getElementById('checkDateSelect');
 
-  days.forEach((d, idx) => {
-    const opt = document.createElement('option');
-    opt.value = d.date;
-    let label = `Xem kết quả ngày ${d.date}`;
-    if (d.dayOfWeek) label += ` (${d.dayOfWeek})`;
-    if (idx === 0) label += ` — Mới nhất`;
-    opt.textContent = label;
-    if (d.date === currentDate) opt.selected = true;
-    select.appendChild(opt);
-  });
+  const fillSelect = (selectEl) => {
+    if (!selectEl) return;
+    selectEl.innerHTML = '';
+    days.forEach((d, idx) => {
+      const opt = document.createElement('option');
+      opt.value = d.date;
+      let label = `Ngày ${d.date}`;
+      if (d.dayOfWeek) label += ` (${d.dayOfWeek})`;
+      if (idx === 0) label += ` — Mới nhất`;
+      opt.textContent = label;
+      if (d.date === currentDate) opt.selected = true;
+      selectEl.appendChild(opt);
+    });
+  };
+
+  fillSelect(unifiedSelect);
+  fillSelect(checkDateSelect);
+
+  // Cập nhật danh sách đài cho khung dò vé
+  updateCheckerProvinces(days);
 }
 
-// Khi người dùng chọn ngày khác
+// Cập nhật danh sách đài tương ứng của ngày đang chọn
+function updateCheckerProvinces(days) {
+  const provSelect = document.getElementById('checkProvinceSelect');
+  if (!provSelect) return;
+  provSelect.innerHTML = '';
+
+  const dayData = days.find(d => d.date === currentDate) || days[0];
+  if (!dayData) return;
+
+  // Lựa chọn từng đài cụ thể (để chống nhầm đài)
+  dayData.provinces.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.province;
+    opt.textContent = `Đài ${p.province}`;
+    provSelect.appendChild(opt);
+  });
+
+  // Tùy chọn kiểm tra tất cả các đài nếu muốn
+  if (dayData.provinces.length > 1) {
+    const optAll = document.createElement('option');
+    optAll.value = 'all';
+    optAll.textContent = `⭐ Kiểm tra cả ${dayData.provinces.length} đài (${dayData.provinces.map(p => p.province).join(', ')})`;
+    provSelect.appendChild(optAll);
+  }
+}
+
+// Khi người dùng chọn ngày ở bộ chọn ngày chính
 function onUnifiedDateChange() {
   const select = document.getElementById('unifiedDateSelect');
   if (!select) return;
   currentDate = select.value;
+
+  // Đồng bộ sang ô chọn ngày của khung dò vé
+  const checkDateSelect = document.getElementById('checkDateSelect');
+  if (checkDateSelect) checkDateSelect.value = currentDate;
+
+  const days = lotteryCache[activeRegion]?.days || [];
+  updateCheckerProvinces(days);
   
-  // Ẩn kết quả dò vé cũ khi đổi ngày
+  // Ẩn kết quả dò cũ
+  const resBox = document.getElementById('checkResultDisplay');
+  if (resBox) resBox.style.display = 'none';
+
+  renderResults();
+}
+
+// Khi người dùng chọn ngày ở khung Dò vé
+function onCheckerDateChange() {
+  const checkDateSelect = document.getElementById('checkDateSelect');
+  if (!checkDateSelect) return;
+  currentDate = checkDateSelect.value;
+
+  // Đồng bộ sang ô chọn ngày chính
+  const unifiedSelect = document.getElementById('unifiedDateSelect');
+  if (unifiedSelect) unifiedSelect.value = currentDate;
+
+  const days = lotteryCache[activeRegion]?.days || [];
+  updateCheckerProvinces(days);
+
+  // Ẩn kết quả dò cũ
   const resBox = document.getElementById('checkResultDisplay');
   if (resBox) resBox.style.display = 'none';
 
@@ -210,9 +272,15 @@ async function handleCheckTicket() {
     return;
   }
 
+  const dateSelect = document.getElementById('checkDateSelect');
+  const provSelect = document.getElementById('checkProvinceSelect');
+  const selectedDateForCheck = dateSelect ? dateSelect.value : currentDate;
+  const selectedProvForCheck = provSelect ? provSelect.value : 'all';
+
+  const provDisplayName = selectedProvForCheck !== 'all' ? `đài ${selectedProvForCheck}` : 'tất cả các đài';
   resBox.className = 'check-result-display no-win';
   resBox.style.display = 'block';
-  resBox.innerHTML = 'Đang kiểm tra đối chiếu vé với tất cả các đài trong ngày...';
+  resBox.innerHTML = `Đang kiểm tra đối chiếu vé với ${provDisplayName} ngày ${selectedDateForCheck}...`;
 
   try {
     const res = await fetch('/api/check-ticket', {
@@ -221,8 +289,8 @@ async function handleCheckTicket() {
       body: JSON.stringify({
         ticketNumber,
         region: activeRegion,
-        date: currentDate,
-        province: 'all' // Tự động dò tất cả các đài
+        date: selectedDateForCheck,
+        province: selectedProvForCheck
       })
     });
 
@@ -250,10 +318,16 @@ async function handleCheckTicket() {
       }
     } else {
       resBox.className = 'check-result-display no-win';
-      const stationsListStr = (result.allStations || []).join(', ');
+      let message = '';
+      if (selectedProvForCheck && selectedProvForCheck !== 'all') {
+        message = `Số vé <strong>${result.ticketNumber}</strong> không trúng giải nào của đài <strong>${selectedProvForCheck}</strong> ngày <strong>${result.date}</strong>.`;
+      } else {
+        const stationsListStr = (result.allStations || []).join(', ');
+        message = `Số vé <strong>${result.ticketNumber}</strong> không trúng giải ở đài nào trong các đài mở thưởng ngày <strong>${result.date}</strong> (${stationsListStr}).`;
+      }
       resBox.innerHTML = `
         <div class="res-title">Vé không trúng giải</div>
-        <div>Số vé <strong>${result.ticketNumber}</strong> không trúng giải ở đài nào trong các đài mở thưởng ngày <strong>${result.date}</strong> (${stationsListStr}).</div>
+        <div>${message}</div>
         <div style="font-size:13px; color:#64748b; margin-top:8px;">Chúc bác luôn vui vẻ và may mắn ở lần mua vé sau ạ! ☘️</div>
       `;
     }

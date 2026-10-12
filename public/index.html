@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#ffffff">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=8.0">
+  <link rel="stylesheet" href="/css/style.css?v=9.0">
 </head>
 <body>
 
@@ -44,12 +44,27 @@
       </select>
     </div>
 
-    <!-- KHUNG DÒ VÉ NHANH (TỰ ĐỘNG SO VỚI TẤT CẢ CÁC ĐÀI TRONG NGÀY) -->
+    <!-- KHUNG DÒ VÉ CHÍNH XÁC (CHỌN ĐÚNG NGÀY & ĐÀI TRÊN TỜ VÉ SỐ) -->
     <section class="checker-section">
-      <h2 class="section-heading">Dò vé số nhanh</h2>
+      <h2 class="section-heading">Dò vé số chính xác (Chống nhầm đài, nhầm ngày)</h2>
       <form id="ticketCheckerForm" class="checker-form" onsubmit="event.preventDefault(); handleCheckTicket();">
+        <div class="form-row">
+          <div>
+            <label class="input-label" for="checkDateSelect">1. Ngày mở thưởng:</label>
+            <select id="checkDateSelect" class="form-select" onchange="onCheckerDateChange()">
+              <!-- Danh sách ngày -->
+            </select>
+          </div>
+          <div>
+            <label class="input-label" for="checkProvinceSelect">2. Đài / Tỉnh thành in trên vé:</label>
+            <select id="checkProvinceSelect" class="form-select">
+              <!-- Danh sách đài mở thưởng của ngày đó -->
+            </select>
+          </div>
+        </div>
+
         <div>
-          <label class="input-label" for="ticketNumberInput">Nhập dãy số trên tờ vé số:</label>
+          <label class="input-label" for="ticketNumberInput">3. Dãy số trên tờ vé số của bạn:</label>
           <div class="ticket-input-wrap">
             <input 
               type="tel" 
@@ -64,7 +79,7 @@
           </div>
         </div>
 
-        <button type="submit" class="btn-primary">Kiểm tra kết quả (Tự động so mọi đài trong ngày)</button>
+        <button type="submit" class="btn-primary">Kiểm tra kết quả ngay</button>
 
         <div id="checkResultDisplay" class="check-result-display">
           <!-- Hiển thị kết quả kiểm tra vé -->
@@ -103,7 +118,7 @@
     </div>
   </footer>
 
-  <script src="/js/celebration.js?v=8.0"></script>
-  <script src="/js/app.js?v=8.0"></script>
+  <script src="/js/celebration.js?v=9.0"></script>
+  <script src="/js/app.js?v=9.0"></script>
 </body>
 </html>

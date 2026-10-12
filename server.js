@@ -191,6 +191,7 @@ app.post('/api/check-ticket', async (req, res) => {
       ticketNumber,
       date: selectedDay.date,
       dayOfWeek: selectedDay.dayOfWeek,
+      checkedProvince: province && province !== 'all' ? province : 'Tất cả các đài',
       isWinner: winningStations.length > 0,
       winningStations,
       allStations: allStationsNames
