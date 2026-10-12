@@ -165,16 +165,16 @@ body {
 .check-result-display {
   display: none;
   margin-top: 16px;
-  padding: 16px;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid transparent;
+  overflow: hidden;
 }
 
 .check-result-display.winner {
   display: block;
-  background: #f0fdf4;
-  border-color: #bbf7d0;
-  color: #166534;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 .check-result-display.no-win {
@@ -183,6 +183,190 @@ body {
   border-color: #e2e8f0;
   color: #334155;
   text-align: center;
+  padding: 16px;
+}
+
+/* KHUNG CHÚC MỪNG PHẦN THƯỞNG HOÀNH TRÁNG */
+.celebration-card {
+  border-radius: 16px;
+  padding: 24px 18px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e2e8f0;
+}
+
+/* Hoạt họa Meme lắc lư vui nhộn */
+.celebration-meme-wrap {
+  margin-bottom: 12px;
+  animation: memeBounce 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes memeBounce {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.04); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.celebration-headline {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.3;
+  margin-bottom: 6px;
+  letter-spacing: -0.2px;
+}
+
+.celebration-subquote {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.celebration-ticket-info {
+  font-size: 15px;
+  color: #475569;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.highlight-ticket-num {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  color: #0f172a;
+  letter-spacing: 2px;
+}
+
+.celebration-station-box {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.station-win-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.celebration-prize-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.celebration-prize-item:first-of-type {
+  border-top: none;
+}
+
+.prize-tag {
+  font-weight: 800;
+  font-size: 16px;
+  color: #15803d;
+}
+
+.prize-matched {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.prize-money {
+  font-size: 18px;
+  font-weight: 800;
+  color: #b91c1c;
+}
+
+.celebration-notice {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 14px;
+}
+
+/* =========================================
+   CÁC CẤP ĐỘ HOÀNH TRÁNG THEO GIÁ TRỊ GIẢI
+   ========================================= */
+
+/* CẤP 4: ĐẠI ĐỘC ĐẮC 2 TỶ (SIÊU BÙNG NỔ) */
+.celebration-tier-jackpot {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef2f2 50%, #fefce8 100%);
+  border: 3px solid #f59e0b;
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.45);
+  animation: pulseJackpot 1.2s infinite alternate;
+}
+
+@keyframes pulseJackpot {
+  0% { transform: scale(1); box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+  100% { transform: scale(1.015); box-shadow: 0 0 35px rgba(220, 38, 38, 0.5); }
+}
+
+.celebration-tier-jackpot .celebration-headline {
+  color: #dc2626;
+  font-size: 24px;
+}
+
+.celebration-tier-jackpot .celebration-subquote {
+  color: #b45309;
+}
+
+.celebration-tier-jackpot .prize-money {
+  font-size: 22px;
+  color: #dc2626;
+  font-weight: 900;
+}
+
+/* CẤP 3: GIẢI LỚN 10 - 50 TRIỆU */
+.celebration-tier-big {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border: 2.5px solid #ea580c;
+  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.25);
+}
+
+.celebration-tier-big .celebration-headline {
+  color: #c2410c;
+}
+
+.celebration-tier-big .celebration-subquote {
+  color: #9a3412;
+}
+
+/* CẤP 2: GIẢI VỪA 1 - 3 TRIỆU */
+.celebration-tier-medium {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 2px solid #16a34a;
+}
+
+.celebration-tier-medium .celebration-headline {
+  color: #15803d;
+}
+
+.celebration-tier-medium .celebration-subquote {
+  color: #166534;
+}
+
+/* CẤP 1: GIẢI NHỎ 40K - 400K */
+.celebration-tier-small {
+  background: #f8fafc;
+  border: 2px solid #86efac;
+}
+
+.celebration-tier-small .celebration-headline {
+  color: #166534;
+}
+
+.celebration-tier-small .celebration-subquote {
+  color: #047857;
 }
 
 .res-title {

@@ -220,31 +220,25 @@ async function handleCheckTicket() {
     if (result.isWinner && result.winningStations.length > 0) {
       resBox.className = 'check-result-display winner';
       
-      let stationsHtml = '';
-      result.winningStations.forEach(ws => {
-        let prizesList = '';
-        ws.prizesWon.forEach(p => {
-          prizesList += `<div style="margin: 4px 0 4px 12px;">• <strong>${p.name}</strong> (Số trúng: <strong>${p.matchedNumber}</strong>) — Tiền thưởng: <strong style="color:#b91c1c;">${p.reward}</strong></div>`;
-        });
-        stationsHtml += `
-          <div style="margin: 10px 0; padding-bottom: 8px; border-bottom: 1px dashed #bbf7d0;">
-            <div style="font-size: 16px; font-weight: 800; color: #15803d;">🎉 Đài ${ws.province}:</div>
-            ${prizesList}
-          </div>
-        `;
-      });
+      const tier = typeof determineCelebrationTier === 'function' 
+        ? determineCelebrationTier(result.winningStations) 
+        : 1;
 
-      resBox.innerHTML = `
-        <div class="res-title">CHÚC MỪNG! VÉ CỦA BẠN ĐÃ TRÚNG THƯỞNG!</div>
-        <div style="font-size: 15px; margin-bottom: 8px;">Số vé: <strong style="font-size: 20px; color: #0f172a;">${result.ticketNumber}</strong> • Ngày: <strong>${result.date} (${result.dayOfWeek || ''})</strong></div>
-        ${stationsHtml}
-      `;
+      // Kích hoạt hiệu ứng pháo hoa và âm thanh theo cấp độ giải thưởng
+      if (typeof launchCelebrationFX === 'function') launchCelebrationFX(tier);
+      if (typeof playCelebrationSound === 'function') playCelebrationSound(tier);
+
+      // Hiển thị khung chúc mừng hoành tráng kèm Meme biểu cảm
+      if (typeof buildCelebrationHTML === 'function') {
+        resBox.innerHTML = buildCelebrationHTML(result, tier);
+      }
     } else {
       resBox.className = 'check-result-display no-win';
       const stationsListStr = (result.allStations || []).join(', ');
       resBox.innerHTML = `
         <div class="res-title">Vé không trúng giải</div>
         <div>Số vé <strong>${result.ticketNumber}</strong> không trúng giải ở đài nào trong các đài mở thưởng ngày <strong>${result.date}</strong> (${stationsListStr}).</div>
+        <div style="font-size:13px; color:#64748b; margin-top:8px;">Chúc bác luôn vui vẻ và may mắn ở lần mua vé sau ạ! ☘️</div>
       `;
     }
 
