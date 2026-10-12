@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#ffffff">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=7.0">
+  <link rel="stylesheet" href="/css/style.css?v=8.0">
 </head>
 <body>
 
@@ -33,9 +33,12 @@
       <button class="region-tab-btn" data-region="mb" onclick="changeRegion('mb')">Miền Bắc</button>
     </nav>
 
-    <!-- BỘ CHỌN NGÀY DUY NHẤT (TO, RÕ, ĐỒNG BỘ CHO CẢ XEM VÀ DÒ VÉ) -->
+    <!-- BỘ CHỌN NGÀY DUY NHẤT (NỔI BẬT TO RÕ ĐỒNG BỘ) -->
     <div class="date-selector-card">
-      <label class="input-label" for="unifiedDateSelect">Chọn ngày mở thưởng:</label>
+      <div class="date-select-label-wrap">
+        <label class="input-label" for="unifiedDateSelect" style="margin-bottom:0; font-weight:800; color:#1e3a8a;">CHỌN NGÀY MỞ THƯỞNG:</label>
+        <span class="date-select-badge">Xem lại 30 ngày</span>
+      </div>
       <select id="unifiedDateSelect" class="form-select date-select-main" onchange="onUnifiedDateChange()">
         <!-- Danh sách ngày tự động nạp từ JS -->
       </select>
@@ -100,7 +103,7 @@
     </div>
   </footer>
 
-  <script src="/js/celebration.js?v=7.0"></script>
-  <script src="/js/app.js?v=7.0"></script>
+  <script src="/js/celebration.js?v=8.0"></script>
+  <script src="/js/app.js?v=8.0"></script>
 </body>
 </html>

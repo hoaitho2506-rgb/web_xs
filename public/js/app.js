@@ -164,8 +164,24 @@ function renderResults() {
     ? `<div class="mobile-scroll-hint">← Vuốt màn hình sang ngang để xem đủ ${provinces.length} đài →</div>` 
     : '';
 
-  // Xuất ra DUY NHẤT 1 BẢNG TABLE
+  const regionNameText = activeRegion === 'mb' ? 'Miền Bắc' : (activeRegion === 'mt' ? 'Miền Trung' : 'Miền Nam');
+  const stationsNamesStr = provinces.map(p => p.province).join(' • ');
+
+  // PHẦN 2: THANH BANNER NGÀY NỔI BẬT TRÊN ĐẦU BẢNG KẾT QUẢ
+  const dateBannerHtml = `
+    <div class="results-date-banner">
+      <div class="banner-date-main">
+        KẾT QUẢ XỔ SỐ ${regionNameText.toUpperCase()} — ${dayData.date} ${dayData.dayOfWeek ? `(${dayData.dayOfWeek.toUpperCase()})` : ''}
+      </div>
+      <div class="banner-date-sub">
+        Mở thưởng ${provinces.length} đài: <strong>${stationsNamesStr}</strong>
+      </div>
+    </div>
+  `;
+
+  // Xuất ra BANNER NGÀY NỔI BẬT + DUY NHẤT 1 BẢNG TABLE
   container.innerHTML = `
+    ${dateBannerHtml}
     ${scrollHint}
     <div class="table-scroll-container">
       <table class="lottery-matrix-table">

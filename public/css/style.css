@@ -79,21 +79,71 @@ body {
   margin-bottom: 14px;
 }
 
+/* PHẦN 1: KHỐI CHỌN NGÀY NỔI BẬT */
 .date-selector-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+  border: 2px solid #2563eb;
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 16px 0 20px 0;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.14);
+}
+
+.date-select-label-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.date-select-badge {
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 6px;
 }
 
 .date-select-main {
-  font-size: 17px !important;
-  font-weight: 700 !important;
-  color: #0f172a !important;
-  background-color: #f8fafc !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: #1e3a8a !important;
+  background-color: #ffffff !important;
+  border: 2px solid #93c5fd !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+}
+
+/* PHẦN 2: THANH BANNER NGÀY NỔI BẬT TRÊN ĐẦU BẢNG KẾT QUẢ */
+.results-date-banner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+  border-left: 6px solid #2563eb;
+}
+
+.banner-date-main {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: #ffffff;
+}
+
+.banner-date-sub {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 500;
 }
 
 .form-row {
