@@ -99,22 +99,22 @@ async function generateLotteryCardImage() {
         { key: 'ĐB', name: 'Đặc Biệt', isSpecial: true }
       ];
 
-  // Tính toán chiều cao từng dòng
+  // Tính toán chiều rộng và cột đài tự co giãn
   const numProvinces = provinces.length;
-  const canvasWidth = 860;
+  const canvasWidth = numProvinces >= 4 ? 920 : (numProvinces === 3 ? 880 : 860);
   const paddingX = 24;
   const tableX = paddingX;
   const tableWidth = canvasWidth - paddingX * 2;
   const prizeColWidth = 110;
   const stationColWidth = (tableWidth - prizeColWidth) / numProvinces;
 
-  // Tính chiều cao cho từng giải
+  // Tính chiều cao cho từng giải (Giải Tư có chiều cao 106px rộng rãi cho 3-4 dòng)
   const rowHeights = prizeOrder.map(item => {
     if (item.isSpecial) return 66; // Hàng đặc biệt rộng rãi
-    if (item.key === '4') return 94; // Giải tư có 7 số (2-3 hàng)
-    if (item.key === '3') return 58; // Giải ba có 2 số
-    if (item.key === '6') return 58; // Giải sáu có 3 số
-    if (isMB && (item.key === '5' || item.key === '3')) return 84;
+    if (item.key === '4') return 106; // Giải tư có 7 số (chia 3-4 dòng thông thoáng)
+    if (item.key === '3') return 56; // Giải ba
+    if (item.key === '6') return 56; // Giải sáu
+    if (isMB && (item.key === '5' || item.key === '3')) return 88;
     return 48; // Hàng chuẩn
   });
 
@@ -295,25 +295,29 @@ async function generateLotteryCardImage() {
         ctx.fillStyle = '#1e3a8a';
         ctx.font = '800 21px "SF Mono", "Roboto Mono", Consolas, monospace';
         ctx.fillText(numbers.join(' - ') || '—', colCenterX, curRowY + h / 2 + 7);
-      } else if (numbers.length > 3) {
-        // GIẢI TƯ HOẶC CÁC GIẢI NHIỀU SỐ (7 số): Thêm dấu "-" ngăn cách rõ ràng, chia 2 dòng
-        ctx.fillStyle = '#0f172a';
-        ctx.font = '700 14px "SF Mono", "Roboto Mono", Consolas, monospace';
-        const half = Math.ceil(numbers.length / 2);
-        const line1 = numbers.slice(0, half).join(' - ');
-        const line2 = numbers.slice(half).join(' - ');
-        ctx.fillText(line1, colCenterX, curRowY + h / 2 - 10);
-        ctx.fillText(line2, colCenterX, curRowY + h / 2 + 15);
-      } else if (numbers.length > 1) {
-        // CÁC GIẢI CÓ TỪ 2 ĐẾN 3 SỐ (như Giải Ba, Giải Sáu...): Dùng dấu "-" để chống rối mắt
-        ctx.fillStyle = '#0f172a';
-        ctx.font = '700 16.5px "SF Mono", "Roboto Mono", Consolas, monospace';
-        ctx.fillText(numbers.join(' - ') || '—', colCenterX, curRowY + h / 2 + 6);
       } else {
-        // CÁC GIẢI CHỈ CÓ 1 SỐ
+        // TẤT CẢ CÁC GIẢI CÒN LẠI (TỰ ĐỘNG CHIA DÒNG VỪA KHÍT CỘT, TUYỆT ĐỐI KHÔNG CHỒNG LẤN)
         ctx.fillStyle = '#0f172a';
-        ctx.font = '700 18px "SF Mono", "Roboto Mono", Consolas, monospace';
-        ctx.fillText(numbers.join(' - ') || '—', colCenterX, curRowY + h / 2 + 6);
+
+        if (item.key === '4') {
+          // Giải Tư: Cỡ chữ 12.5px - 13px tinh tế, ngắt 3-4 dòng thông thoáng
+          ctx.font = numProvinces >= 4
+            ? '700 12px "SF Mono", "Roboto Mono", Consolas, monospace'
+            : '700 13px "SF Mono", "Roboto Mono", Consolas, monospace';
+        } else if (numbers.length > 2) {
+          ctx.font = '700 15px "SF Mono", "Roboto Mono", Consolas, monospace';
+        } else {
+          ctx.font = '700 17px "SF Mono", "Roboto Mono", Consolas, monospace';
+        }
+
+        const lines = wrapNumbersToFit(numbers, stationColWidth, ctx);
+        const numLines = lines.length;
+        const lineHeight = numLines >= 4 ? 20 : (numLines >= 3 ? 22 : 24);
+        const startY = curRowY + (h - (numLines - 1) * lineHeight) / 2 + 5;
+
+        lines.forEach((lineText, lineIdx) => {
+          ctx.fillText(lineText, colCenterX, startY + lineIdx * lineHeight);
+        });
       }
     });
 
@@ -322,7 +326,7 @@ async function generateLotteryCardImage() {
 
   // 5. FOOTER THIỆP CHIA SẺ NỔI BẬT & SANG TRỌNG
   const footerY = curRowY + 16;
-  const leftBadgeWidth = 562;
+  const leftBadgeWidth = Math.min(580, tableWidth - 235);
   const badgeHeight = 38;
 
   // Khung Badge bên trái: Xem kết quả trực tuyến & Link web nổi bật
@@ -390,6 +394,38 @@ async function generateLotteryCardImage() {
   currentGeneratedDataUrl = canvas.toDataURL('image/png');
   currentGeneratedBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
   return currentGeneratedDataUrl;
+}
+
+/**
+ * Tự động ngắt các số thành nhiều dòng vừa khít với độ rộng cột,
+ * ngăn cách bằng ' - ', tuyệt đối không để số tràn hoặc chồng lấn sang cột đài bên cạnh.
+ */
+function wrapNumbersToFit(numbers, maxColWidth, ctx) {
+  if (!numbers || numbers.length === 0) return ['—'];
+  if (numbers.length === 1) return [String(numbers[0])];
+
+  const maxTextWidth = maxColWidth - 18; // Chừa lề an toàn tối thiểu 9px mỗi bên cột
+  const lines = [];
+  let currentLine = '';
+
+  for (let i = 0; i < numbers.length; i++) {
+    const num = String(numbers[i]);
+    const candidate = currentLine ? `${currentLine} - ${num}` : num;
+    
+    // Nếu dòng có thêm số mới mà vượt quá độ rộng cho phép và dòng đã có ít nhất 1 số
+    if (currentLine && ctx.measureText(candidate).width > maxTextWidth) {
+      lines.push(currentLine);
+      currentLine = num;
+    } else {
+      currentLine = candidate;
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  return lines;
 }
 
 /**
