@@ -1,5 +1,5 @@
 /**
- * Logic ứng dụng Xổ Số Gia Đình - BẢNG MA TRẬN DUY NHẤT CHO TẤT CẢ CÁC ĐÀI
+ * Logic ứng dụng Xổ Số Gia Đình - Đồng bộ 100% Bộ Chọn Ngày & Bảng Kết Quả
  */
 
 let activeRegion = 'mn';
@@ -9,23 +9,27 @@ let currentDate = null;
 // Khởi chạy khi load trang
 document.addEventListener('DOMContentLoaded', () => {
   loadRegionData(activeRegion);
-  loadCheckerRegionData('mn');
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
 });
 
-// Chuyển tab vùng miền
+// Chuyển tab vùng miền (Nam - Trung - Bắc)
 function changeRegion(region) {
   activeRegion = region;
   document.querySelectorAll('.region-tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.region === region);
   });
+  
+  // Xóa kết quả dò vé cũ nếu có
+  const resBox = document.getElementById('checkResultDisplay');
+  if (resBox) resBox.style.display = 'none';
+
   loadRegionData(region);
 }
 
-// Tải dữ liệu vùng miền chính
+// Tải dữ liệu vùng miền từ API
 async function loadRegionData(region) {
   const container = document.getElementById('resultsSection');
   container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Đang tải dữ liệu kết quả...</div>`;
@@ -46,8 +50,9 @@ async function loadRegionData(region) {
       return;
     }
 
+    // Mặc định chọn ngày đầu tiên (ngày mới nhất)
     currentDate = data.days[0].date;
-    renderFilterDateOptions(data.days);
+    renderDateSelector(data.days);
     renderResults();
 
   } catch (err) {
@@ -55,29 +60,41 @@ async function loadRegionData(region) {
   }
 }
 
-// Điền các ngày vào bộ chọn ngày
-function renderFilterDateOptions(days) {
-  const select = document.getElementById('filterDateSelect');
+// Điền các ngày vào bộ chọn ngày duy nhất
+function renderDateSelector(days) {
+  const select = document.getElementById('unifiedDateSelect');
   if (!select) return;
   select.innerHTML = '';
-  days.forEach(d => {
+
+  days.forEach((d, idx) => {
     const opt = document.createElement('option');
     opt.value = d.date;
-    opt.textContent = `Xem kết quả ngày ${d.date} (${d.dayOfWeek || ''})`;
+    let label = `Xem kết quả ngày ${d.date}`;
+    if (d.dayOfWeek) label += ` (${d.dayOfWeek})`;
+    if (idx === 0) label += ` — Mới nhất`;
+    opt.textContent = label;
     if (d.date === currentDate) opt.selected = true;
     select.appendChild(opt);
   });
 }
 
-function onFilterDateChange() {
-  currentDate = document.getElementById('filterDateSelect').value;
+// Khi người dùng chọn ngày khác
+function onUnifiedDateChange() {
+  const select = document.getElementById('unifiedDateSelect');
+  if (!select) return;
+  currentDate = select.value;
+  
+  // Ẩn kết quả dò vé cũ khi đổi ngày
+  const resBox = document.getElementById('checkResultDisplay');
+  if (resBox) resBox.style.display = 'none';
+
   renderResults();
 }
 
 /**
- * HIỂN THỊ DUY NHẤT 1 BẢNG TỔNG HỢP CHO TẤT CẢ CÁC ĐÀI
- * - Hàng 1 (Header): Cột "Giải" + Cột của từng đài (3 đài = 3 cột, 4 đài = 4 cột trên cùng 1 hàng)
- * - Các hàng tiếp theo: Mỗi giải là 1 hàng ngang, đối chiếu trực tiếp giữa các đài
+ * HIỂN THỊ DUY NHẤT 1 BẢNG TỔNG HỢP CHO TẤT CẢ CÁC ĐÀI TRONG NGÀY ĐANG CHỌN
+ * - Header: Cột "Giải" + Các cột đài (3 đài thì 3 cột, 4 đài thì 4 cột)
+ * - Rows: Mỗi hàng là một Giải từ Giải 8 lên Giải Đặc Biệt
  */
 function renderResults() {
   const container = document.getElementById('resultsSection');
@@ -90,9 +107,9 @@ function renderResults() {
   const provinces = dayData.provinces || [];
   const isMB = activeRegion === 'mb';
 
-  // Thứ tự giải chuẩn:
-  // Miền Nam & Miền Trung: Từ Giải Tám (2 số) lên đến Giải Đặc Biệt (6 số)
-  // Miền Bắc: Từ Giải Bảy (2 số) lên đến Giải Đặc Biệt (5 số)
+  // Thứ tự giải:
+  // Miền Nam & Miền Trung: Giải 8 -> Giải 7 -> ... -> Đặc Biệt
+  // Miền Bắc: Giải 7 -> Giải 6 -> ... -> Đặc Biệt
   const prizeOrder = isMB
     ? [
         { key: '7', name: 'Giải Bảy', css: 'matrix-row-eighth' },
@@ -116,7 +133,7 @@ function renderResults() {
         { key: 'ĐB', name: 'Đặc Biệt', css: 'matrix-row-special' }
       ];
 
-  // 1. DÒNG HEADER: Cột "Giải" và TẤT CẢ CÁC ĐÀI NẰM TRÊN CÙNG 1 HÀNG
+  // 1. DÒNG HEADER: Cột "Giải" và TẤT CẢ CÁC ĐÀI CỦA NGÀY NẰM TRÊN CÙNG 1 HÀNG
   let headerColsHtml = `<th class="col-prize-sticky col-prize-corner">Giải</th>`;
   provinces.forEach(prov => {
     headerColsHtml += `<th class="col-station-header">${prov.province}</th>`;
@@ -147,7 +164,7 @@ function renderResults() {
     ? `<div class="mobile-scroll-hint">← Vuốt màn hình sang ngang để xem đủ ${provinces.length} đài →</div>` 
     : '';
 
-  // Xuất ra DUY NHẤT 1 THẺ TABLE
+  // Xuất ra DUY NHẤT 1 BẢNG TABLE
   container.innerHTML = `
     ${scrollHint}
     <div class="table-scroll-container">
@@ -165,81 +182,32 @@ function renderResults() {
   `;
 }
 
-// LOGIC KHUNG DÒ VÉ TỰ ĐỘNG
-async function loadCheckerRegionData(region) {
-  let data = lotteryCache[region];
-  if (!data) {
-    try {
-      const res = await fetch(`/api/lottery?region=${region}`);
-      data = await res.json();
-      lotteryCache[region] = data;
-    } catch (e) {
-      return;
-    }
-  }
-
-  const dateSelect = document.getElementById('checkDateSelect');
-  dateSelect.innerHTML = '';
-  if (data?.days) {
-    data.days.forEach(d => {
-      const opt = document.createElement('option');
-      opt.value = d.date;
-      opt.textContent = `${d.date} (${d.dayOfWeek || ''})`;
-      dateSelect.appendChild(opt);
-    });
-  }
-
-  onCheckerDateChange();
-}
-
-function onCheckerRegionChange() {
-  const reg = document.getElementById('checkRegionSelect').value;
-  loadCheckerRegionData(reg);
-}
-
-function onCheckerDateChange() {
-  const reg = document.getElementById('checkRegionSelect').value;
-  const selDate = document.getElementById('checkDateSelect').value;
-  const provSelect = document.getElementById('checkProvinceSelect');
-  provSelect.innerHTML = '';
-
-  const data = lotteryCache[reg];
-  if (!data?.days) return;
-
-  const dayData = data.days.find(d => d.date === selDate) || data.days[0];
-  if (!dayData) return;
-
-  dayData.provinces.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p.province;
-    opt.textContent = `Đài ${p.province}`;
-    provSelect.appendChild(opt);
-  });
-}
-
+// LOGIC DÒ VÉ TỰ ĐỘNG - TỰ ĐỘNG ĐỐI CHIẾU MỌI ĐÀI CỦA NGÀY ĐANG CHỌN
 async function handleCheckTicket() {
   const numInput = document.getElementById('ticketNumberInput');
   const ticketNumber = numInput.value.trim().replace(/\D/g, '');
-  const region = document.getElementById('checkRegionSelect').value;
-  const date = document.getElementById('checkDateSelect').value;
-  const province = document.getElementById('checkProvinceSelect').value;
   const resBox = document.getElementById('checkResultDisplay');
 
   if (!ticketNumber) {
-    alert('Vui lòng nhập dãy số trên tờ vé số.');
+    alert('Vui lòng nhập dãy số trên tờ vé số của bạn.');
     numInput.focus();
     return;
   }
 
   resBox.className = 'check-result-display no-win';
   resBox.style.display = 'block';
-  resBox.innerHTML = 'Đang kiểm tra đối chiếu kết quả...';
+  resBox.innerHTML = 'Đang kiểm tra đối chiếu vé với tất cả các đài trong ngày...';
 
   try {
     const res = await fetch('/api/check-ticket', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ticketNumber, region, date, province })
+      body: JSON.stringify({
+        ticketNumber,
+        region: activeRegion,
+        date: currentDate,
+        province: 'all' // Tự động dò tất cả các đài
+      })
     });
 
     const result = await res.json();
@@ -249,27 +217,34 @@ async function handleCheckTicket() {
       return;
     }
 
-    if (result.isWinner && result.prizesWon.length > 0) {
+    if (result.isWinner && result.winningStations.length > 0) {
       resBox.className = 'check-result-display winner';
-      let detailsHtml = '';
-      result.prizesWon.forEach(p => {
-        detailsHtml += `
-          <div class="res-detail">
-            • <strong>${p.name}</strong> (Số trúng: ${p.matchedNumber}) — Tiền thưởng: <strong>${p.reward}</strong>
+      
+      let stationsHtml = '';
+      result.winningStations.forEach(ws => {
+        let prizesList = '';
+        ws.prizesWon.forEach(p => {
+          prizesList += `<div style="margin: 4px 0 4px 12px;">• <strong>${p.name}</strong> (Số trúng: <strong>${p.matchedNumber}</strong>) — Tiền thưởng: <strong style="color:#b91c1c;">${p.reward}</strong></div>`;
+        });
+        stationsHtml += `
+          <div style="margin: 10px 0; padding-bottom: 8px; border-bottom: 1px dashed #bbf7d0;">
+            <div style="font-size: 16px; font-weight: 800; color: #15803d;">🎉 Đài ${ws.province}:</div>
+            ${prizesList}
           </div>
         `;
       });
 
       resBox.innerHTML = `
-        <div class="res-title">Chúc mừng! Vé số của bạn đã trúng giải</div>
-        <div>Số vé: <strong>${result.ticketNumber}</strong> | Đài: <strong>${result.province}</strong> (${result.date})</div>
-        ${detailsHtml}
+        <div class="res-title">CHÚC MỪNG! VÉ CỦA BẠN ĐÃ TRÚNG THƯỞNG!</div>
+        <div style="font-size: 15px; margin-bottom: 8px;">Số vé: <strong style="font-size: 20px; color: #0f172a;">${result.ticketNumber}</strong> • Ngày: <strong>${result.date} (${result.dayOfWeek || ''})</strong></div>
+        ${stationsHtml}
       `;
     } else {
       resBox.className = 'check-result-display no-win';
+      const stationsListStr = (result.allStations || []).join(', ');
       resBox.innerHTML = `
         <div class="res-title">Vé không trúng giải</div>
-        <div>Số vé <strong>${result.ticketNumber}</strong> không trùng khớp với các giải của đài <strong>${result.province}</strong> ngày ${result.date}.</div>
+        <div>Số vé <strong>${result.ticketNumber}</strong> không trúng giải ở đài nào trong các đài mở thưởng ngày <strong>${result.date}</strong> (${stationsListStr}).</div>
       `;
     }
 

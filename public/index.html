@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#ffffff">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=5.0">
+  <link rel="stylesheet" href="/css/style.css?v=6.0">
 </head>
 <body>
 
@@ -26,36 +26,27 @@
 
   <main class="container">
 
-    <!-- KHUNG DÒ VÉ NHANH -->
+    <!-- THANH CHỌN 3 MIỀN -->
+    <nav class="region-nav" style="margin-top: 18px;">
+      <button class="region-tab-btn active" data-region="mn" onclick="changeRegion('mn')">Miền Nam</button>
+      <button class="region-tab-btn" data-region="mt" onclick="changeRegion('mt')">Miền Trung</button>
+      <button class="region-tab-btn" data-region="mb" onclick="changeRegion('mb')">Miền Bắc</button>
+    </nav>
+
+    <!-- BỘ CHỌN NGÀY DUY NHẤT (TO, RÕ, ĐỒNG BỘ CHO CẢ XEM VÀ DÒ VÉ) -->
+    <div class="date-selector-card">
+      <label class="input-label" for="unifiedDateSelect">Chọn ngày mở thưởng:</label>
+      <select id="unifiedDateSelect" class="form-select date-select-main" onchange="onUnifiedDateChange()">
+        <!-- Danh sách ngày tự động nạp từ JS -->
+      </select>
+    </div>
+
+    <!-- KHUNG DÒ VÉ NHANH (TỰ ĐỘNG SO VỚI TẤT CẢ CÁC ĐÀI TRONG NGÀY) -->
     <section class="checker-section">
-      <h2 class="section-heading">Dò vé số tự động</h2>
+      <h2 class="section-heading">Dò vé số nhanh</h2>
       <form id="ticketCheckerForm" class="checker-form" onsubmit="event.preventDefault(); handleCheckTicket();">
-        <div class="form-row">
-          <div>
-            <label class="input-label" for="checkRegionSelect">Vùng miền</label>
-            <select id="checkRegionSelect" class="form-select" onchange="onCheckerRegionChange()">
-              <option value="mn">Miền Nam</option>
-              <option value="mt">Miền Trung</option>
-              <option value="mb">Miền Bắc</option>
-            </select>
-          </div>
-          <div>
-            <label class="input-label" for="checkDateSelect">Ngày mở thưởng</label>
-            <select id="checkDateSelect" class="form-select" onchange="onCheckerDateChange()">
-              <!-- JS điền -->
-            </select>
-          </div>
-        </div>
-
         <div>
-          <label class="input-label" for="checkProvinceSelect">Đài / Tỉnh thành</label>
-          <select id="checkProvinceSelect" class="form-select">
-            <!-- JS điền -->
-          </select>
-        </div>
-
-        <div>
-          <label class="input-label" for="ticketNumberInput">Dãy số vé số</label>
+          <label class="input-label" for="ticketNumberInput">Nhập dãy số trên tờ vé số:</label>
           <div class="ticket-input-wrap">
             <input 
               type="tel" 
@@ -63,14 +54,14 @@
               pattern="[0-9]*" 
               id="ticketNumberInput" 
               class="form-input ticket-number-input" 
-              placeholder="Ví dụ: 667748" 
+              placeholder="Nhập 5 hoặc 6 chữ số" 
               maxlength="6"
               autocomplete="off"
             >
           </div>
         </div>
 
-        <button type="submit" class="btn-primary">Kiểm tra kết quả</button>
+        <button type="submit" class="btn-primary">Kiểm tra kết quả (Tự động so mọi đài trong ngày)</button>
 
         <div id="checkResultDisplay" class="check-result-display">
           <!-- Hiển thị kết quả kiểm tra vé -->
@@ -78,21 +69,7 @@
       </form>
     </section>
 
-    <!-- THANH ĐIỀU HƯỚNG 3 MIỀN -->
-    <nav class="region-nav">
-      <button class="region-tab-btn active" data-region="mn" onclick="changeRegion('mn')">Miền Nam</button>
-      <button class="region-tab-btn" data-region="mt" onclick="changeRegion('mt')">Miền Trung</button>
-      <button class="region-tab-btn" data-region="mb" onclick="changeRegion('mb')">Miền Bắc</button>
-    </nav>
-
-    <!-- BỘ CHỌN NGÀY -->
-    <div class="filters-wrap">
-      <select id="filterDateSelect" class="form-select" onchange="onFilterDateChange()" style="font-weight:600;">
-        <!-- JS điền ngày -->
-      </select>
-    </div>
-
-    <!-- KHU VỰC HIỂN THỊ DUY NHẤT 1 BẢNG TỔNG HỢP CÁC ĐÀI TRONG NGÀY -->
+    <!-- KHU VỰC HIỂN THỊ BẢNG KẾT QUẢ ĐA ĐÀI TRONG NGÀY ĐANG CHỌN -->
     <section id="resultsSection">
       <!-- Toàn bộ các đài hiển thị chung 1 bảng duy nhất -->
     </section>
@@ -123,6 +100,6 @@
     </div>
   </footer>
 
-  <script src="/js/app.js?v=5.0"></script>
+  <script src="/js/app.js?v=6.0"></script>
 </body>
 </html>

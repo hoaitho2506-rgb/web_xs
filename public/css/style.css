@@ -79,10 +79,21 @@ body {
   margin-bottom: 14px;
 }
 
-.checker-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.date-selector-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.date-select-main {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  background-color: #f8fafc !important;
+  cursor: pointer;
 }
 
 .form-row {

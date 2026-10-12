@@ -165,25 +165,35 @@ app.post('/api/check-ticket', async (req, res) => {
       if (found) selectedDay = found;
     }
 
-    // Tìm theo đài / tỉnh (so khớp cả tên rút gọn và tên gốc)
-    let selectedProv = selectedDay.provinces[0];
-    if (province) {
-      const query = province.toLowerCase();
-      const foundProv = selectedDay.provinces.find(p => 
-        p.province.toLowerCase().includes(query) ||
-        (p.rawProvince && p.rawProvince.toLowerCase().includes(query))
-      );
-      if (foundProv) selectedProv = foundProv;
-    }
+    // Tự động đối chiếu vé với TẤT CẢ các đài trong ngày mở thưởng
+    const winningStations = [];
+    const allStationsNames = selectedDay.provinces.map(p => p.province);
 
-    const result = checkTicket(ticketNumber, selectedProv.prizes, reg);
+    selectedDay.provinces.forEach(prov => {
+      // Nếu có chỉ định 1 đài cụ thể thì chỉ so đài đó, ngược lại so khớp tất cả các đài
+      if (province && province !== 'all') {
+        const query = province.toLowerCase();
+        const isMatch = prov.province.toLowerCase().includes(query) || 
+                        (prov.rawProvince && prov.rawProvince.toLowerCase().includes(query));
+        if (!isMatch) return;
+      }
+
+      const res = checkTicket(ticketNumber, prov.prizes, reg);
+      if (res.isWinner && res.prizesWon.length > 0) {
+        winningStations.push({
+          province: prov.province,
+          prizesWon: res.prizesWon
+        });
+      }
+    });
 
     res.json({
-      ...result,
+      ticketNumber,
       date: selectedDay.date,
       dayOfWeek: selectedDay.dayOfWeek,
-      province: selectedProv.province,
-      fullPrizes: selectedProv.prizes
+      isWinner: winningStations.length > 0,
+      winningStations,
+      allStations: allStationsNames
     });
 
   } catch (err) {
