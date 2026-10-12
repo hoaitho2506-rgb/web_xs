@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#ffffff">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=9.0">
+  <link rel="stylesheet" href="/css/style.css?v=10.0">
 </head>
 <body>
 
@@ -44,9 +44,14 @@
       </select>
     </div>
 
-    <!-- KHUNG DÒ VÉ CHÍNH XÁC (CHỌN ĐÚNG NGÀY & ĐÀI TRÊN TỜ VÉ SỐ) -->
+    <!-- 1. KHU VỰC HIỂN THỊ BẢNG KẾT QUẢ ĐA ĐÀI (ĐẬP VÀO MẮT ĐẦU TIÊN ĐỂ TỰ DÒ) -->
+    <section id="resultsSection">
+      <!-- Toàn bộ các đài hiển thị chung 1 bảng duy nhất -->
+    </section>
+
+    <!-- 2. KHU VỰC DÒ VÉ TỰ ĐỘNG (NẰM DƯỚI ĐỂ ĐỐI CHIẾU LẠI BẰNG MÁY) -->
     <section class="checker-section">
-      <h2 class="section-heading">Dò vé số chính xác (Chống nhầm đài, nhầm ngày)</h2>
+      <h2 class="section-heading">Dò vé số tự động (Chống nhầm đài, nhầm ngày)</h2>
       <form id="ticketCheckerForm" class="checker-form" onsubmit="event.preventDefault(); handleCheckTicket();">
         <div class="form-row">
           <div>
@@ -87,11 +92,6 @@
       </form>
     </section>
 
-    <!-- KHU VỰC HIỂN THỊ BẢNG KẾT QUẢ ĐA ĐÀI TRONG NGÀY ĐANG CHỌN -->
-    <section id="resultsSection">
-      <!-- Toàn bộ các đài hiển thị chung 1 bảng duy nhất -->
-    </section>
-
     <!-- LỊCH MỞ THƯỞNG -->
     <section class="schedule-info">
       <strong>Thời gian mở thưởng hàng ngày:</strong><br>
@@ -118,7 +118,7 @@
     </div>
   </footer>
 
-  <script src="/js/celebration.js?v=9.0"></script>
-  <script src="/js/app.js?v=9.0"></script>
+  <script src="/js/celebration.js?v=10.0"></script>
+  <script src="/js/app.js?v=10.0"></script>
 </body>
 </html>
