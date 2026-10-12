@@ -9,6 +9,7 @@ let currentDate = null;
 // Khởi chạy khi load trang
 document.addEventListener('DOMContentLoaded', () => {
   loadRegionData(activeRegion);
+  updateTicketInputHint();
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
@@ -26,7 +27,30 @@ function changeRegion(region) {
   const resBox = document.getElementById('checkResultDisplay');
   if (resBox) resBox.style.display = 'none';
 
+  updateTicketInputHint();
   loadRegionData(region);
+}
+
+// Cập nhật gợi ý và giới hạn độ dài số vé theo miền
+function updateTicketInputHint() {
+  const input = document.getElementById('ticketNumberInput');
+  const label = document.getElementById('ticketInputLabel');
+  if (!input) return;
+
+  const isMB = activeRegion === 'mb';
+  const requiredDigits = isMB ? 5 : 6;
+  const regionName = isMB ? 'Miền Bắc' : (activeRegion === 'mt' ? 'Miền Trung' : 'Miền Nam');
+
+  input.maxLength = requiredDigits;
+  input.placeholder = isMB ? 'Nhập đủ 5 số (ví dụ: 07363)' : 'Nhập đủ 6 số (ví dụ: 667748)';
+  if (label) {
+    label.innerHTML = `3. Nhập đủ <strong>${requiredDigits} chữ số</strong> in trên vé số ${regionName}:`;
+  }
+
+  // Nếu số đang có dài hơn độ dài miền mới thì cắt bớt
+  if (input.value.length > requiredDigits) {
+    input.value = input.value.slice(0, requiredDigits);
+  }
 }
 
 // Tải dữ liệu vùng miền từ API
@@ -263,11 +287,20 @@ function renderResults() {
 // LOGIC DÒ VÉ TỰ ĐỘNG - TỰ ĐỘNG ĐỐI CHIẾU MỌI ĐÀI CỦA NGÀY ĐANG CHỌN
 async function handleCheckTicket() {
   const numInput = document.getElementById('ticketNumberInput');
-  const ticketNumber = numInput.value.trim().replace(/\D/g, '');
+  const ticketNumber = numInput ? numInput.value.trim().replace(/\D/g, '') : '';
   const resBox = document.getElementById('checkResultDisplay');
+  const isMB = activeRegion === 'mb';
+  const requiredDigits = isMB ? 5 : 6;
+  const regionName = isMB ? 'Miền Bắc' : (activeRegion === 'mt' ? 'Miền Trung' : 'Miền Nam');
 
   if (!ticketNumber) {
-    alert('Vui lòng nhập dãy số trên tờ vé số của bạn.');
+    alert(`Bác vui lòng nhập dãy số in trên tờ vé số ${regionName}!`);
+    numInput.focus();
+    return;
+  }
+
+  if (ticketNumber.length !== requiredDigits) {
+    alert(`Vé số ${regionName} có đúng ${requiredDigits} chữ số.\nBác đang nhập ${ticketNumber.length} số. Bác hãy nhập đủ ${requiredDigits} số in trên tờ vé để đối chiếu chính xác và không bỏ sót Giải Đặc Biệt nhé!`);
     numInput.focus();
     return;
   }

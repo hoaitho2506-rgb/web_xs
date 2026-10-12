@@ -1,4 +1,4 @@
-const CACHE_NAME = 'xoso-v10';
+const CACHE_NAME = 'xoso-v11';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
