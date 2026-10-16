@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#ffffff">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=14.0">
+  <link rel="stylesheet" href="/css/style.css?v=15.0">
 </head>
 <body>
 
@@ -116,16 +116,15 @@
             <span id="ticketDigitsBadge" class="digits-badge badge-mn">Vé 6 số</span>
           </div>
           <div class="ticket-input-wrap">
-            <input 
-              type="tel" 
-              inputmode="numeric" 
-              pattern="[0-9]*" 
-              id="ticketNumberInput" 
-              class="form-input ticket-number-input" 
-              placeholder="Nhập đủ 6 số (ví dụ: 667748)" 
-              maxlength="6"
-              autocomplete="off"
-            >
+            <div id="ticketDigitsContainer" class="ticket-digits-container" role="group" aria-label="Nhập từng chữ số trên vé">
+              <!-- Render tự động 6 ô vuông (Miền Nam & Miền Trung) hoặc 5 ô vuông (Miền Bắc) -->
+            </div>
+            <input type="hidden" id="ticketNumberInput" value="">
+            <div class="ticket-box-actions">
+              <button type="button" class="btn-clear-digits" onclick="clearTicketDigits()" title="Xóa các số đã nhập">
+                <span>✕ Xóa số</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -225,6 +224,6 @@
 
   <script src="/js/celebration.js?v=14.0"></script>
   <script src="/js/share.js?v=14.4"></script>
-  <script src="/js/app.js?v=14.0"></script>
+  <script src="/js/app.js?v=15.0"></script>
 </body>
 </html>

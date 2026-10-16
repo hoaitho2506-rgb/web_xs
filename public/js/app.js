@@ -38,18 +38,13 @@ function changeRegion(region) {
 
 // Cập nhật gợi ý và giới hạn độ dài số vé theo miền
 function updateTicketInputHint() {
-  const input = document.getElementById('ticketNumberInput');
   const label = document.getElementById('ticketStepLabel');
   const badge = document.getElementById('ticketDigitsBadge');
-  if (!input) return;
 
   const isMB = activeRegion === 'mb';
   const requiredDigits = isMB ? 5 : 6;
   const regionName = isMB ? 'Miền Bắc' : (activeRegion === 'mt' ? 'Miền Trung' : 'Miền Nam');
 
-  input.maxLength = requiredDigits;
-  input.placeholder = isMB ? 'Nhập đủ 5 số (ví dụ: 07363)' : 'Nhập đủ 6 số (ví dụ: 667748)';
-  
   if (label) {
     label.textContent = `Nhập đủ ${requiredDigits} số in trên tờ vé (${regionName}):`;
   }
@@ -59,10 +54,193 @@ function updateTicketInputHint() {
     badge.className = isMB ? 'digits-badge badge-mb' : 'digits-badge badge-mn';
   }
 
-  // Nếu số đang có dài hơn độ dài miền mới thì cắt bớt
-  if (input.value.length > requiredDigits) {
-    input.value = input.value.slice(0, requiredDigits);
+  // Tự động tạo 5 ô vuông cho Miền Bắc hoặc 6 ô vuông cho Miền Nam/Miền Trung
+  renderTicketDigitBoxes(requiredDigits);
+}
+
+// Tạo các ô vuông nhập số theo miền (5 ô hoặc 6 ô)
+function renderTicketDigitBoxes(count) {
+  const container = document.getElementById('ticketDigitsContainer');
+  if (!container) return;
+
+  // Thu thập các chữ số đang có trước khi chuyển đổi
+  const existingValues = [];
+  const oldBoxes = container.querySelectorAll('.ticket-digit-box');
+  oldBoxes.forEach(b => {
+    if (b.value) existingValues.push(b.value);
+  });
+
+  // Nếu số lượng ô hiện tại đã đúng bằng count thì chỉ cần đồng bộ lại
+  if (oldBoxes.length === count) {
+    syncHiddenTicketInput();
+    return;
   }
+
+  container.innerHTML = '';
+  container.setAttribute('data-count', count);
+
+  for (let i = 0; i < count; i++) {
+    const box = document.createElement('input');
+    box.type = 'tel';
+    box.inputMode = 'numeric';
+    box.pattern = '[0-9]*';
+    box.maxLength = 1;
+    box.className = 'ticket-digit-box';
+    box.setAttribute('data-index', i);
+    box.setAttribute('aria-label', `Chữ số thứ ${i + 1}`);
+    box.autocomplete = 'off';
+
+    // Giữ lại các số đã gõ trước đó nếu chuyển giữa các miền
+    if (existingValues[i] !== undefined) {
+      box.value = existingValues[i];
+      box.classList.add('has-value');
+    }
+
+    // Tự động chuyển ô khi gõ số
+    box.addEventListener('input', (e) => {
+      handleDigitBoxInput(e, i, count);
+    });
+
+    // Xử lý phím Backspace, Mũi tên, Enter
+    box.addEventListener('keydown', (e) => {
+      handleDigitBoxKeyDown(e, i, count);
+    });
+
+    // Hỗ trợ dán (paste) cả dãy số
+    box.addEventListener('paste', (e) => {
+      handleDigitBoxPaste(e, count);
+    });
+
+    // Tự động bôi đen để gõ đè số mới tiện lợi
+    box.addEventListener('focus', () => {
+      box.select();
+    });
+
+    container.appendChild(box);
+  }
+
+  syncHiddenTicketInput();
+}
+
+// Xử lý khi gõ vào ô vuông: tự động nhảy sang ô tiếp theo
+function handleDigitBoxInput(e, index, count) {
+  const box = e.target;
+  const rawValue = box.value.replace(/\D/g, '');
+
+  if (rawValue.length > 0) {
+    box.value = rawValue.slice(-1);
+    box.classList.add('has-value');
+
+    // Tự động nhảy sang ô kế tiếp
+    if (index < count - 1) {
+      const nextBox = document.querySelector(`.ticket-digit-box[data-index="${index + 1}"]`);
+      if (nextBox) {
+        nextBox.focus();
+        nextBox.select();
+      }
+    }
+  } else {
+    box.value = '';
+    box.classList.remove('has-value');
+  }
+
+  syncHiddenTicketInput();
+}
+
+// Xử lý phím: Backspace tự lùi ô, Mũi tên trái/phải di chuyển, Enter dò vé
+function handleDigitBoxKeyDown(e, index, count) {
+  const box = e.target;
+
+  if (e.key === 'Backspace') {
+    if (!box.value && index > 0) {
+      // Nếu ô đang trống, bấm Backspace sẽ lùi về ô trước và xóa số ô trước
+      e.preventDefault();
+      const prevBox = document.querySelector(`.ticket-digit-box[data-index="${index - 1}"]`);
+      if (prevBox) {
+        prevBox.value = '';
+        prevBox.classList.remove('has-value');
+        prevBox.focus();
+        syncHiddenTicketInput();
+      }
+    } else if (box.value) {
+      box.classList.remove('has-value');
+    }
+  } else if (e.key === 'ArrowLeft' && index > 0) {
+    e.preventDefault();
+    const prevBox = document.querySelector(`.ticket-digit-box[data-index="${index - 1}"]`);
+    if (prevBox) {
+      prevBox.focus();
+      prevBox.select();
+    }
+  } else if (e.key === 'ArrowRight' && index < count - 1) {
+    e.preventDefault();
+    const nextBox = document.querySelector(`.ticket-digit-box[data-index="${index + 1}"]`);
+    if (nextBox) {
+      nextBox.focus();
+      nextBox.select();
+    }
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    handleCheckTicket();
+  }
+}
+
+// Hỗ trợ paste (dán) nguyên dãy 5 hoặc 6 số vào các ô vuông
+function handleDigitBoxPaste(e, count) {
+  e.preventDefault();
+  const pasteData = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+  const digits = pasteData.replace(/\D/g, '').slice(0, count);
+
+  if (!digits) return;
+
+  const boxes = document.querySelectorAll('.ticket-digit-box');
+  for (let i = 0; i < boxes.length; i++) {
+    if (i < digits.length) {
+      boxes[i].value = digits[i];
+      boxes[i].classList.add('has-value');
+    } else {
+      boxes[i].value = '';
+      boxes[i].classList.remove('has-value');
+    }
+  }
+
+  // Focus vào ô tiếp theo cần nhập hoặc ô cuối
+  const targetIndex = Math.min(digits.length, count - 1);
+  if (boxes[targetIndex]) {
+    boxes[targetIndex].focus();
+    boxes[targetIndex].select();
+  }
+
+  syncHiddenTicketInput();
+}
+
+// Lấy toàn bộ dãy số từ các ô vuông
+function getTicketNumber() {
+  const boxes = document.querySelectorAll('.ticket-digit-box');
+  let result = '';
+  boxes.forEach(b => {
+    result += b.value.trim();
+  });
+  return result;
+}
+
+// Đồng bộ giá trị vào input ẩn ticketNumberInput
+function syncHiddenTicketInput() {
+  const hiddenInput = document.getElementById('ticketNumberInput');
+  if (hiddenInput) {
+    hiddenInput.value = getTicketNumber();
+  }
+}
+
+// Xóa nhanh toàn bộ các ô để nhập lại từ đầu
+function clearTicketDigits() {
+  const boxes = document.querySelectorAll('.ticket-digit-box');
+  boxes.forEach(b => {
+    b.value = '';
+    b.classList.remove('has-value');
+  });
+  syncHiddenTicketInput();
+  if (boxes[0]) boxes[0].focus();
 }
 
 // Tải dữ liệu vùng miền từ API
@@ -309,21 +487,27 @@ function renderResults() {
 // LOGIC DÒ VÉ TỰ ĐỘNG - TỰ ĐỘNG ĐỐI CHIẾU MỌI ĐÀI CỦA NGÀY ĐANG CHỌN
 async function handleCheckTicket() {
   const numInput = document.getElementById('ticketNumberInput');
-  const ticketNumber = numInput ? numInput.value.trim().replace(/\D/g, '') : '';
+  const ticketNumber = getTicketNumber() || (numInput ? numInput.value.trim().replace(/\D/g, '') : '');
   const resBox = document.getElementById('checkResultDisplay');
   const isMB = activeRegion === 'mb';
   const requiredDigits = isMB ? 5 : 6;
   const regionName = isMB ? 'Miền Bắc' : (activeRegion === 'mt' ? 'Miền Trung' : 'Miền Nam');
+  const boxes = document.querySelectorAll('.ticket-digit-box');
 
   if (!ticketNumber) {
     alert(`Bác vui lòng nhập dãy số in trên tờ vé số ${regionName}!`);
-    numInput.focus();
+    if (boxes[0]) boxes[0].focus();
     return;
   }
 
   if (ticketNumber.length !== requiredDigits) {
     alert(`Vé số ${regionName} có đúng ${requiredDigits} chữ số.\nBác đang nhập ${ticketNumber.length} số. Bác hãy nhập đủ ${requiredDigits} số in trên tờ vé để đối chiếu chính xác và không bỏ sót Giải Đặc Biệt nhé!`);
-    numInput.focus();
+    for (const b of boxes) {
+      if (!b.value) {
+        b.focus();
+        break;
+      }
+    }
     return;
   }
 
